@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery — Shreeji Photo Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Nunito:wght@200;300;400;500&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+:root {
+--blush: #F9E4E1;
+--blush-deep: #F2C4BC;
+--rose: #E8A89C;
+--rose-gold: #C9837A;
+--rose-dark: #A0594F;
+--petal: #FDF0EE;
+--cream: #FDF8F6;
+--white: #FFFFFF;
+--text-dark: #3D2020;
+--text-mid: #7A4A4A;
+--text-soft: #B88A8A;
+--gold: #C9956A;
+--gold-light: #E8C4A0;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--cream); color:var(--text-dark); font-family:'Nunito',sans-serif; font-weight:300; overflow-x:hidden; cursor:none; }
+/* Custom cursor */
+.cursor { width:10px; height:10px; background:var(--rose-gold); border-radius:50%; position:fixed; top:0; left:0; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:transform .1s; }
+.cursor-ring { width:38px; height:38px; border:1.5px solid var(--rose-gold); border-radius:50%; position:fixed; top:0; left:0; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:transform .25s,width .3s,height .3s,opacity .3s; opacity:.5; }
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:var(--petal); }
+::-webkit-scrollbar-thumb { background:var(--rose); border-radius:4px; }
+/* Petals */
+.petals-bg { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.petal { position:absolute; border-radius:50% 0 50% 0; animation:petalFall linear infinite; opacity:0; background:radial-gradient(ellipse at 40% 40%,rgba(232,168,156,.35),rgba(201,131,122,.1)); }
+@keyframes petalFall { 0%{transform:translateY(-40px) rotate(0deg) translateX(0);opacity:0;} 10%{opacity:1;} 90%{opacity:.4;} 100%{transform:translateY(110vh) rotate(360deg) translateX(60px);opacity:0;} }
+/* Navbar */
+nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:26px 64px; display:flex; justify-content:space-between; align-items:center; transition:all .4s; }
+nav.scrolled { background:rgba(253,240,238,.92); backdrop-filter:blur(16px); padding:16px 64px; box-shadow:0 4px 40px rgba(201,131,122,.1); }
+.logo { display:flex; flex-direction:column; line-height:1; text-decoration:none; }
+.logo-script { font-family:'Great Vibes',cursive; font-size:34px; color:var(--rose-gold); line-height:1; }
+.logo-sub { font-size:8px; letter-spacing:5px; text-transform:uppercase; color:var(--text-soft); margin-top:2px; }
+.nav-links { display:flex; gap:36px; list-style:none; }
+.nav-links a { color:var(--text-mid); text-decoration:none; font-size:11px; letter-spacing:2.5px; text-transform:uppercase; font-weight:400; position:relative; padding-bottom:3px; transition:color .3s; }
+.nav-links a::after { content:''; position:absolute; bottom:0; left:0; width:0; height:1px; background:var(--rose-gold); transition:width .3s; }
+.nav-links a:hover, .nav-links a.active { color:var(--rose-gold); }
+.nav-links a:hover::after, .nav-links a.active::after { width:100%; }
+.nav-cta { background:var(--rose-gold); color:var(--white); border:none; padding:11px 28px; border-radius:40px; font-family:'Nunito',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; font-weight:400; cursor:none; transition:all .3s; box-shadow:0 4px 20px rgba(201,131,122,.35); text-decoration:none; }
+.nav-cta:hover { background:var(--rose-dark); transform:translateY(-2px); }
+/* Page Hero */
+.page-hero { min-height:52vh; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; padding:140px 64px 80px; text-align:center; }
+.page-hero-bg { position:absolute; inset:0; background:radial-gradient(ellipse at 50% 60%,rgba(249,228,225,.95) 0%,transparent 70%), radial-gradient(ellipse at 80% 20%,rgba(232,168,156,.3) 0%,transparent 50%), linear-gradient(160deg,#FDF8F6 0%,#FBE8E5 50%,#F9E4E1 100%); }
+.bokeh { position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; }
+.bokeh-1 { width:500px; height:500px; background:rgba(232,168,156,.18); top:-200px; right:-100px; animation:bokehFloat 10s ease-in-out infinite; }
+.bokeh-2 { width:350px; height:350px; background:rgba(201,131,122,.1); bottom:-100px; left:-80px; animation:bokehFloat 14s ease-in-out infinite reverse; }
+.bokeh-3 { width:250px; height:250px; background:rgba(249,228,225,.5); top:30%; left:30%; animation:bokehFloat 8s ease-in-out infinite 2s; }
+@keyframes bokehFloat { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(20px,-20px) scale(1.05);} 66%{transform:translate(-15px,15px) scale(.95);} }
+.page-hero-content { position:relative; z-index:2; }
+.hero-script { font-family:'Great Vibes',cursive; font-size:48px; color:var(--rose-gold); display:block; margin-bottom:-8px; opacity:0; animation:dreamFadeUp 1.2s ease .2s forwards; }
+.hero-h1 { font-family:'Playfair Display',serif; font-size:clamp(44px,6vw,80px); font-weight:300; color:var(--text-dark); line-height:1.1; opacity:0; animation:dreamFadeUp 1.2s ease .4s forwards; }
+.hero-h1 em { font-style:italic; color:var(--rose-gold); }
+.hero-sub { font-size:13px; line-height:1.9; color:var(--text-mid); max-width:520px; margin:20px auto 0; opacity:0; animation:dreamFadeUp 1s ease .7s forwards; }
+.hero-divider { width:50px; height:1px; background:linear-gradient(to right,var(--rose),transparent); margin:24px auto; opacity:0; animation:dreamFadeUp 1s ease .9s forwards; }
+@keyframes dreamFadeUp { from{opacity:0;transform:translateY(30px);} to{opacity:1;transform:translateY(0);} }
+/* Count strip */
+.count-strip { background:linear-gradient(135deg,var(--rose-gold),var(--rose-dark)); display:flex; justify-content:center; gap:80px; padding:22px 64px; }
+.cs-item { text-align:center; color:var(--white); }
+.cs-num { font-family:'Playfair Display',serif; font-size:28px; font-weight:300; line-height:1; }
+.cs-label { font-size:9px; letter-spacing:3px; text-transform:uppercase; opacity:.8; margin-top:3px; }
+/* Section common */
+.section-eyebrow { font-family:'Great Vibes',cursive; font-size:28px; color:var(--rose-gold); margin-bottom:8px; display:block; }
+.section-title { font-family:'Playfair Display',serif; font-size:clamp(32px,4vw,52px); font-weight:300; line-height:1.15; color:var(--text-dark); margin-bottom:18px; }
+.section-title em { font-style:italic; color:var(--rose-gold); }
+/* Reveal */
+.reveal { opacity:0; transform:translateY(30px); transition:opacity .9s ease,transform .9s ease; }
+.reveal.visible { opacity:1; transform:none; }
+.reveal-delay-1 { transition-delay:.12s; }
+.reveal-delay-2 { transition-delay:.24s; }
+/* ── GALLERY SECTION ── */
+.gallery-section { padding:80px 64px 120px; background:var(--white); position:relative; z-index:1; }
+/* Filter tabs */
+.gallery-controls { display:flex; justify-content:space-between; align-items:center; margin-bottom:48px; flex-wrap:wrap; gap:20px; }
+.gallery-controls-left { }
+.filter-tabs { display:flex; gap:6px; flex-wrap:wrap; }
+.ftab { background:none; border:1.5px solid var(--blush-deep); color:var(--text-soft); padding:8px 22px; border-radius:30px; font-family:'Nunito',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; cursor:none; transition:all .3s; font-weight:400; }
+.ftab.active { background:var(--rose-gold); border-color:var(--rose-gold); color:var(--white); box-shadow:0 4px 16px rgba(201,131,122,.35); }
+.ftab:hover:not(.active) { border-color:var(--rose-gold); color:var(--rose-gold); }
+.results-count { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--text-soft); white-space:nowrap; }
+/* Masonry grid */
+.masonry { columns:4; column-gap:14px; }
+@media (max-width:1100px) { .masonry { columns:3; } }
+@media (max-width:768px) { .masonry { columns:2; } }
+@media (max-width:480px) { .masonry { columns:1; } }
+.gi {
+break-inside:avoid;
+margin-bottom:14px;
+border-radius:14px;
+overflow:hidden;
+position:relative;
+cursor:none;
+display:block;
+transition:transform .4s ease, box-shadow .4s ease, opacity .4s ease;
+}
+.gi.hidden { opacity:0; pointer-events:none; height:0; margin:0; }
+.gi:hover { transform:translateY(-6px); box-shadow:0 20px 60px rgba(160,89,79,.18); }
+.gi-img { width:100%; display:block; position:relative; overflow:hidden; }
+.gi-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s ease; border-radius:14px; }
+.gi:hover .gi-img img { transform:scale(1.06); }
+/* Fallback gradient placeholders */
+.gi-img.ph { aspect-ratio:3/4; display:flex; align-items:center; justify-content:center; border-radius:14px; }
+.gi-img.ph-wide { aspect-ratio:4/3; }
+.gi-img.ph-sq { aspect-ratio:1/1; }
+.gi-overlay { position:absolute; inset:0; border-radius:14px; background:linear-gradient(to top,rgba(160,89,79,.75) 0%,rgba(160,89,79,.2) 50%,transparent 100%); display:flex; flex-direction:column; justify-content:flex-end; padding:20px; opacity:0; transition:opacity .35s; }
+.gi:hover .gi-overlay { opacity:1; }
+.gi-tag { font-size:9px; letter-spacing:2.5px; color:rgba(255,255,255,.75); text-transform:uppercase; margin-bottom:4px; }
+.gi-title { font-family:'Playfair Display',serif; font-size:17px; font-weight:300; color:var(--white); line-height:1.3; }
+.gi-zoom { position:absolute; top:14px; right:14px; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.2); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.3); display:flex; align-items:center; justify-content:center; font-size:14px; opacity:0; transition:opacity .35s; color:var(--white); }
+.gi:hover .gi-zoom { opacity:1; }
+/* ── LIGHTBOX ── */
+.lb { position:fixed; inset:0; z-index:500; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .35s; }
+.lb.open { opacity:1; pointer-events:all; }
+.lb-backdrop { position:absolute; inset:0; background:rgba(30,10,10,.88); backdrop-filter:blur(12px); cursor:none; }
+.lb-wrap { position:relative; z-index:1; max-width:90vw; max-height:90vh; display:flex; flex-direction:column; align-items:center; }
+.lb-img-wrap { position:relative; border-radius:16px; overflow:hidden; box-shadow:0 30px 100px rgba(0,0,0,.5); max-height:80vh; }
+.lb-img-wrap img { max-width:88vw; max-height:78vh; object-fit:contain; display:block; border-radius:16px; background:var(--text-dark); }
+.lb-caption { margin-top:18px; text-align:center; }
+.lb-caption-tag { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--rose); margin-bottom:5px; }
+.lb-caption-title { font-family:'Playfair Display',serif; font-size:20px; font-weight:300; color:var(--white); }
+.lb-close { position:absolute; top:-18px; right:-18px; width:44px; height:44px; border-radius:50%; background:var(--rose-gold); border:none; color:var(--white); font-size:20px; cursor:none; display:flex; align-items:center; justify-content:center; transition:all .3s; box-shadow:0 4px 16px rgba(201,131,122,.5); z-index:2; }
+.lb-close:hover { background:var(--rose-dark); transform:scale(1.1); }
+.lb-nav { position:absolute; top:50%; transform:translateY(-50%); width:50px; height:50px; border-radius:50%; background:rgba(255,255,255,.12); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.2); color:var(--white); font-size:22px; cursor:none; display:flex; align-items:center; justify-content:center; transition:all .3s; z-index:2; }
+.lb-nav:hover { background:var(--rose-gold); border-color:var(--rose-gold); }
+.lb-prev { left:-70px; }
+.lb-next { right:-70px; }
+.lb-counter { position:absolute; bottom:-50px; left:50%; transform:translateX(-50%); font-size:10px; letter-spacing:3px; color:rgba(255,255,255,.5); text-transform:uppercase; white-space:nowrap; }
+/* Divider text section */
+.mid-banner { background:var(--petal); padding:70px 64px; text-align:center; border-top:1px solid var(--blush-deep); border-bottom:1px solid var(--blush-deep); position:relative; z-index:1; }
+.mid-banner p { font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(20px,3vw,30px); color:var(--text-mid); line-height:1.7; max-width:720px; margin:0 auto; }
+.mid-banner p em { color:var(--rose-gold); font-style:italic; }
+.mid-rose { font-size:30px; margin-bottom:18px; display:block; }
+/* Featured strip - full-bleed 3-col */
+.featured-strip { display:grid; grid-template-columns:1fr 1fr 1fr; height:420px; position:relative; z-index:1; }
+.fs-item { position:relative; overflow:hidden; cursor:none; }
+.fs-item img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .7s ease; }
+.fs-item:hover img { transform:scale(1.08); }
+.fs-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(63,16,16,.7),transparent); display:flex; flex-direction:column; justify-content:flex-end; padding:30px; transition:background .4s; }
+.fs-item:hover .fs-overlay { background:linear-gradient(to top,rgba(63,16,16,.85),rgba(63,16,16,.2)); }
+.fs-cat { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,.65); margin-bottom:6px; }
+.fs-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:300; color:var(--white); }
+.fs-cta { margin-top:12px; font-size:9px; letter-spacing:2.5px; text-transform:uppercase; color:var(--rose); opacity:0; transform:translateY(8px); transition:opacity .3s,transform .3s; text-decoration:none; }
+.fs-item:hover .fs-cta { opacity:1; transform:translateY(0); }
+/* CTA section */
+.gallery-cta { padding:100px 64px; text-align:center; background:var(--white); position:relative; z-index:1; }
+.gallery-cta::before { content:'✿'; position:absolute; top:30px; left:60px; font-size:180px; color:rgba(232,168,156,.06); pointer-events:none; }
+.gallery-cta::after { content:'✿'; position:absolute; bottom:30px; right:60px; font-size:180px; color:rgba(232,168,156,.06); pointer-events:none; }
+.cta-eyebrow { font-family:'Great Vibes',cursive; font-size:34px; color:var(--rose-gold); display:block; margin-bottom:0; }
+.cta-title { font-family:'Playfair Display',serif; font-size:clamp(34px,4vw,58px); font-weight:300; color:var(--text-dark); line-height:1.15; margin-bottom:18px; }
+.cta-title em { color:var(--rose-gold); font-style:italic; }
+.cta-text { font-size:13px; color:var(--text-mid); line-height:1.9; max-width:500px; margin:0 auto 40px; }
+.cta-actions { display:flex; gap:20px; justify-content:center; align-items:center; }
+.btn-rose { background:var(--rose-gold); color:var(--white); padding:15px 40px; border-radius:40px; border:none; font-family:'Nunito',sans-serif; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:none; text-decoration:none; display:inline-block; box-shadow:0 6px 24px rgba(201,131,122,.4); transition:all .3s; }
+.btn-rose:hover { background:var(--rose-dark); transform:translateY(-3px); }
+.btn-outline-rose { color:var(--rose-gold); text-decoration:none; font-size:11px; letter-spacing:2px; text-transform:uppercase; border-bottom:1px solid var(--blush-deep); padding-bottom:2px; transition:all .3s; }
+.btn-outline-rose:hover { color:var(--rose-dark); border-color:var(--rose-gold); }
+/* Footer */
+footer { background:var(--text-dark); padding:64px; }
+.footer-top { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:60px; margin-bottom:50px; }
+.footer-brand .logo-script { color:var(--blush-deep); }
+.footer-brand .logo-sub { color:var(--text-soft); }
+.footer-brand p { font-size:12px; color:var(--text-soft); line-height:1.9; margin-top:14px; max-width:270px; }
+.footer-socials { display:flex; gap:10px; margin-top:22px; }
+.social-btn { width:38px; height:38px; border-radius:50%; background:rgba(249,228,225,.08); border:1px solid rgba(249,228,225,.15); display:flex; align-items:center; justify-content:center; text-decoration:none; font-size:14px; transition:all .3s; cursor:none; }
+.social-btn:hover { background:var(--rose-gold); border-color:var(--rose-gold); }
+.footer-col h4 { font-size:9px; letter-spacing:4px; text-transform:uppercase; color:var(--blush-deep); margin-bottom:18px; }
+.footer-col ul { list-style:none; }
+.footer-col ul li { margin-bottom:10px; }
+.footer-col ul li a { color:var(--text-soft); text-decoration:none; font-size:12px; transition:color .3s; cursor:none; }
+.footer-col ul li a:hover { color:var(--blush); }
+.footer-bottom { border-top:1px solid rgba(249,228,225,.08); padding-top:28px; display:flex; justify-content:space-between; align-items:center; }
+.footer-copy { font-size:11px; color:var(--text-soft); }
+.footer-tagline { font-family:'Great Vibes',cursive; font-size:22px; color:var(--rose); }
+/* Mobile */
+@media (max-width:768px) {
+nav { padding:18px 24px; }
+nav.scrolled { padding:12px 24px; }
+.nav-links, .nav-cta { display:none; }
+.page-hero { padding:120px 24px 60px; }
+.count-strip { gap:30px; padding:18px 24px; flex-wrap:wrap; }
+.gallery-section { padding:60px 20px 80px; }
+.gallery-controls { flex-direction:column; align-items:flex-start; }
+.featured-strip { grid-template-columns:1fr; height:auto; }
+.fs-item { height:260px; }
+.gallery-cta { padding:70px 24px; }
+.cta-actions { flex-direction:column; }
+.mid-banner { padding:50px 24px; }
+footer { padding:40px 24px; }
+.footer-top { grid-template-columns:1fr; gap:28px; }
+.footer-bottom { flex-direction:column; gap:10px; text-align:center; }
+.lb-prev { left:-14px; }
+.lb-next { right:-14px; }
+}
+</style>
+</head>
+<body>
+<div class="petals-bg" id="petals"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<!-- NAVBAR -->
+<nav id="navbar">
+<a href="index.html" class="logo">
+<span class="logo-script">Shreeji Photo Studio</span><br>
+<span class="logo-sub">& Suhani Designing</span>
+</a>
+<ul class="nav-links">
+<li><a href="index.html#about">About</a></li>
+<li><a href="index.html#services">Services</a></li>
+<li><a href="gallery.html" class="active">Gallery</a></li>
+<li><a href="index.html#pricing">Pricing</a></li>
+<li><a href="index.html#contact">Contact</a></li>
+</ul>
+<a href="index.html#contact" class="nav-cta">Book Session</a>
+</nav>
+<!-- PAGE HERO -->
+<section class="page-hero">
+<div class="page-hero-bg"></div>
+<div class="bokeh bokeh-1"></div>
+<div class="bokeh bokeh-2"></div>
+<div class="bokeh bokeh-3"></div>
+<div class="page-hero-content">
+<span class="hero-script">A story in every frame…</span>
+<h1 class="hero-h1">Our <em>Gallery</em> of<br>Beautiful Moments</h1>
+<div class="hero-divider"></div>
+<p class="hero-sub">From tearful first glances to tiny newborn yawns — every photograph here holds a real, irreplaceable memory.</p>
+</div>
+</section>
+<!-- COUNT STRIP -->
+<div class="count-strip">
+<div class="cs-item"><div class="cs-num">5,000+</div><div class="cs-label">Happy Clients</div></div>
+<div class="cs-item"><div class="cs-num">120+</div><div class="cs-label">Weddings Shot</div></div>
+<div class="cs-item"><div class="cs-num">19+</div><div class="cs-label">Years Experience</div></div>
+<div class="cs-item"><div class="cs-num">3</div><div class="cs-label">Photography Awards</div></div>
+</div>
+<!-- GALLERY SECTION -->
+<section class="gallery-section">
+<!-- Filter tabs -->
+<div class="gallery-controls reveal">
+<div class="filter-tabs" id="filterTabs">
+<button class="ftab active" data-cat="all">All Work</button>
+<button class="ftab" data-cat="wedding">Weddings</button>
+<button class="ftab" data-cat="prewedding">Pre-Wedding</button>
+<button class="ftab" data-cat="baby">Baby & Maternity</button>
+<button class="ftab" data-cat="portrait">Portraits</button>
+<button class="ftab" data-cat="events">Events</button>
+<button class="ftab" data-cat="fashion">Fashion</button>
+</div>
+<div class="results-count" id="resultsCount">Showing 30 images</div>
+</div>
+<!-- Masonry grid -->
+<div class="masonry" id="masonryGrid">
+<!-- WEDDINGS -->
+<div class="gi" data-cat="wedding" data-title="The Wedding Vow" data-tag="Wedding" data-src="gallery/009.jpg">
+<div class="gi-img"><img src="gallery/009.jpg" alt="Wedding Vow" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Wedding</span><div class="gi-title">The Wedding Vow</div></div>
+</div>
+<div class="gi" data-cat="portrait" data-title="Golden Hour Portrait" data-tag="Portrait" data-src="gallery/037.jpg">
+<div class="gi-img"><img src="gallery/037.jpg" alt="Golden Hour Portrait" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Portrait</span><div class="gi-title">Golden Hour Portrait</div></div>
+</div>
+<div class="gi" data-cat="prewedding" data-title="Romance Ride" data-tag="Pre-Wedding" data-src="gallery/545.JPG">
+<div class="gi-img"><img src="gallery/545.JPG" alt="Romance Ride" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Pre-Wedding</span><div class="gi-title">Romance Ride</div></div>
+</div>
+<div class="gi" data-cat="prewedding" data-title="Forever Us" data-tag="Pre-Wedding" data-src="gallery/280.JPG">
+<div class="gi-img"><img src="gallery/280.JPG" alt="Forever Us" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Pre-Wedding</span><div class="gi-title">Forever Us</div></div>
+</div>
+<div class="gi" data-cat="wedding" data-title="Bridal Elegance" data-tag="Wedding" data-src="gallery/046.jpg">
+<div class="gi-img"><img src="gallery/046.jpg" alt="Bridal Elegance" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Wedding</span><div class="gi-title">Bridal Elegance</div></div>
+</div>
+<div class="gi" data-cat="Events" data-title="Performance" data-tag="Events" data-src="gallery/258.jpg">
+<div class="gi-img"><img src="gallery/258.jpg" alt="Performance" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Events</span><div class="gi-title">Performance</div></div>
+</div>
+<div class="gi" data-cat="prewedding" data-title="Sunset Romance" data-tag="Pre-Wedding" data-src="gallery/D 03.jpg">
+<div class="gi-img"><img src="gallery/D 03.jpg" alt="Sunset Romance" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Pre-Wedding</span><div class="gi-title">Sunset Romance</div></div>
+</div>
+<div class="gi" data-cat="portrait" data-title="Soft Light, Softer Soul" data-tag="Portrait" data-src="gallery/031.jpg">
+<div class="gi-img"><img src="gallery/031.jpg" alt="Soft Light Portrait" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Portrait</span><div class="gi-title">Soft Light, Softer Soul</div></div>
+</div>
+<div class="gi" data-cat="wedding" data-title="The First Dance" data-tag="Wedding" data-src="gallery/026.jpg">
+<div class="gi-img"><img src="gallery/026.jpg" alt="The First Dance" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Wedding</span><div class="gi-title">The First Dance</div></div>
+</div>
+<div class="gi" data-cat="fashion" data-title="Studio Glam" data-tag="Fashion" data-src="gallery/0102.JPG">
+<div class="gi-img"><img src="gallery/0102.JPG" alt="Studio Glam" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Fashion</span><div class="gi-title">Studio Glam</div></div>
+</div>
+<div class="gi" data-cat="wedding" data-title="Dance" data-tag="wedding" data-src="gallery/012.JPG">
+<div class="gi-img"><img src="gallery/012.JPG" alt="wedding" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Wedding</span><div class="gi-title">Dance</div></div>
+</div>
+<div class="gi" data-cat="events" data-title="Celebration Night" data-tag="Event" data-src="gallery/022.JPG">
+<div class="gi-img"><img src="gallery/022.JPG" alt="Celebration Night" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Event</span><div class="gi-title">Celebration Night</div></div>
+</div>
+<div class="gi" data-cat="prewedding" data-title="The Royal Look" data-tag="Pre-Wedding" data-src="gallery/880.JPG">
+<div class="gi-img"><img src="gallery/880.JPG" alt="The Royal Look" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Pre-Wedding</span><div class="gi-title">The Royal Look</div></div>
+</div>
+<div class="gi" data-cat="wedding" data-title="Petals & Promises" data-tag="Wedding" data-src="gallery/013.JPG">
+<div class="gi-img"><img src="gallery/013.JPG" alt="Petals and Promises" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Wedding</span><div class="gi-title">Petals & Promises</div></div>
+</div>
+<div class="gi" data-cat="portrait" data-title="Timeless Beauty" data-tag="Portrait" data-src="gallery/196.JPG">
+<div class="gi-img"><img src="gallery/196.JPG" alt="Timeless Beauty" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Portrait</span><div class="gi-title">Timeless Beauty</div></div>
+</div>
+<div class="gi" data-cat="fashion" data-title="Editorial Bloom" data-tag="Fashion" data-src="gallery/001.jpg">
+<div class="gi-img"><img src="gallery/001.jpg" alt="Editorial Bloom" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Fashion</span><div class="gi-title">Editorial Bloom</div></div>
+</div>
+<div class="gi" data-cat="events" data-title="Corporate Excellence" data-tag="Event" data-src="gallery/120.jpg">
+<div class="gi-img"><img src="gallery/120.jpg" alt="Corporate Event" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Event</span><div class="gi-title">Corporate Excellence</div></div>
+</div>
+<div class="gi" data-cat="wedding" data-title="Sindoor Ceremony" data-tag="Wedding" data-src="gallery/048.jpg">
+<div class="gi-img"><img src="gallery/048.jpg" alt="Sindoor Ceremony" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Wedding</span><div class="gi-title">Sindoor Ceremony</div></div>
+</div>
+<div class="gi" data-cat="baby" data-title="Angel" data-tag="Baby" data-src="gallery/002.jpg">
+<div class="gi-img"><img src="gallery/002.jpg" alt="Sleeping Angel" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Baby</span><div class="gi-title">Angel</div></div>
+</div>
+<div class="gi" data-cat="prewedding" data-title="Breathe in Love" data-tag="Pre-Wedding" data-src="gallery/003.JPG">
+<div class="gi-img"><img src="gallery/003.JPG" alt="Breathe in Love" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Pre-Wedding</span><div class="gi-title">Breathe in Love</div></div>
+</div>
+<div class="gi" data-cat="portrait" data-title="Morning Light" data-tag="Portrait" data-src="gallery/2025.png">
+<div class="gi-img"><img src="gallery/2025.png" alt="Morning Light" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Portrait</span><div class="gi-title">Morning Light</div></div>
+</div>
+<div class="gi" data-cat="fashion" data-title="Friends" data-tag="Fashion" data-src="gallery/004.jpg">
+<div class="gi-img"><img src="gallery/004.jpg" alt="Friends" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Fashion</span><div class="gi-title">Friends</div></div>
+</div>
+<div class="gi" data-cat="events" data-title="Award Night" data-tag="Event" data-src="gallery/005.jpg">
+<div class="gi-img"><img src="gallery/005.jpg" alt="Award Night" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Event</span><div class="gi-title">Award Night</div></div>
+</div>
+<div class="gi" data-cat="wedding" data-title="Haldi Ceremony" data-tag="Wedding" data-src="gallery/025.jpg">
+<div class="gi-img"><img src="gallery/025.jpg" alt="Haldi Ceremony" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Wedding</span><div class="gi-title">Haldi Ceremony</div></div>
+</div>
+<div class="gi" data-cat="baby" data-title="Mama's World" data-tag="Maternity" data-src="gallery/052.png">
+<div class="gi-img"><img src="gallery/052.png" alt="Mama's World" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Maternity</span><div class="gi-title">Mama's World</div></div>
+</div>
+<div class="gi" data-cat="portrait" data-title="Family Legacy" data-tag="Portrait" data-src="gallery/006.JPG">
+<div class="gi-img"><img src="gallery/006.JPG" alt="Family Legacy" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Portrait</span><div class="gi-title">Family Legacy</div></div>
+</div>
+<div class="gi" data-cat="prewedding" data-title="Garden of Love" data-tag="Pre-Wedding" data-src="gallery/007.JPG">
+<div class="gi-img"><img src="gallery/007.JPG" alt="Garden of Love" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Pre-Wedding</span><div class="gi-title">Garden of Love</div></div>
+</div>
+<div class="gi" data-cat="fashion" data-title="Bold & Beautiful" data-tag="Fashion" data-src="gallery/008.JPG">
+<div class="gi-img"><img src="gallery/008.JPG" alt="Bold & Beautiful" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Fashion</span><div class="gi-title">Bold & Beautiful</div></div>
+</div>
+<div class="gi" data-cat="events" data-title="Wedding Reception" data-tag="Event" data-src="gallery/010.JPG">
+<div class="gi-img"><img src="gallery/010.JPG" alt="Wedding Reception" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Event</span><div class="gi-title">Wedding Reception</div></div>
+</div>
+<div class="gi" data-cat="wedding" data-title="Sacred Rituals" data-tag="Wedding" data-src="gallery/011.jpg">
+<div class="gi-img"><img src="gallery/011.jpg" alt="Sacred Rituals" loading="lazy"></div>
+<div class="gi-zoom">⊕</div>
+<div class="gi-overlay"><span class="gi-tag">Wedding</span><div class="gi-title">Sacred Rituals</div></div>
+</div>
+</div><!-- /masonry -->
+</section>
+<!-- MID BANNER -->
+<div class="mid-banner">
+<span class="mid-rose">🌸</span>
+<p>"We don't just press a shutter — we <em>listen</em> to the light, <em>feel</em> the moment, and <em>preserve</em> what words never could."</p>
+</div>
+<!-- FEATURED STRIP -->
+<div class="featured-strip">
+<div class="fs-item">
+<img src="gallery/044.jpg" alt="Weddings">
+<div class="fs-overlay">
+<div class="fs-cat">Featured Collection</div>
+<div class="fs-title">Wedding Stories</div>
+<a href="#" class="fs-cta" onclick="document.querySelector('[data-cat=wedding]').parentElement.parentElement.querySelector('[data-cat=\'wedding\']').click();return false;">Explore Weddings →</a>
+</div>
+</div>
+<div class="fs-item">
+<img src="gallery/014.jpg" alt="Baby">
+<div class="fs-overlay">
+<div class="fs-cat">Featured Collection</div>
+<div class="fs-title">Baby & Maternity</div>
+<a href="#" class="fs-cta">Explore Baby →</a>
+</div>
+</div>
+<div class="fs-item">
+<img src="gallery/015.jpg" alt="Pre-Wedding">
+<div class="fs-overlay">
+<div class="fs-cat">Featured Collection</div>
+<div class="fs-title">Pre-Wedding Romance</div>
+<a href="#" class="fs-cta">Explore Pre-Wedding →</a>
+</div>
+</div>
+</div>
+<!-- CTA -->
+<section class="gallery-cta">
+<div class="reveal">
+<span class="cta-eyebrow">Your story awaits…</span>
+<h2 class="cta-title">Ready to Create<br>Something <em>Unforgettable?</em></h2>
+<p class="cta-text">Let's meet over chai and plan a session as unique as you are. Every booking comes with a complimentary 30-minute consultation.</p>
+<div class="cta-actions">
+<a href="index.html#contact" class="btn-rose">Book Your Session 🌸</a>
+<a href="index.html#pricing" class="btn-outline-rose">View Packages →</a>
+</div>
+</div>
+</section>
+<!-- FOOTER -->
+<footer>
+<div class="footer-top">
+<div class="footer-brand">
+<div class="logo"><span class="logo-script">Shreeji Photo Studio</span><br><span class="logo-sub">& Suhani Designing</span></div>
+<p>Capturing life's most beautiful moments with warmth, artistry, and genuine love since 2007.</p>
+<div class="footer-socials"><a href="#" class="social-btn">📷</a><a href="#" class="social-btn">📘</a><a href="#" class="social-btn">📺</a><a href="#" class="social-btn">💬</a></div>
+</div>
+<div class="footer-col"><h4>Services</h4><ul><li><a href="index.html#services">Wedding Photography</a></li><li><a href="index.html#services">Pre-Wedding Shoots</a></li><li><a href="index.html#services">Baby & Maternity</a></li><li><a href="index.html#services">Portrait Sessions</a></li><li><a href="index.html#services">Corporate Events</a></li><li><a href="index.html#services">Product Photography</a></li></ul></div>
+<div class="footer-col"><h4>Studio</h4><ul><li><a href="index.html#about">Our Story</a></li><li><a href="index.html#about">The Team</a></li><li><a href="gallery.html">Portfolio</a></li><li><a href="index.html#testimonials">Testimonials</a></li></ul></div>
+<div class="footer-col"><h4>Help</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li><li><a href="#">Cancellation Policy</a></li><li><a href="#">FAQs</a></li></ul></div>
+</div>
+<div class="footer-bottom"><div class="footer-copy">© 2007 Shreeji Photo Studio & Suhani Designing. All rights reserved.</div><div class="footer-tagline">Made with love & light ✿</div></div>
+</footer>
+<!-- LIGHTBOX -->
+<div class="lb" id="lightbox" role="dialog" aria-modal="true">
+<div class="lb-backdrop" id="lbBackdrop"></div>
+<div class="lb-wrap">
+<button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+<button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous">‹</button>
+<button class="lb-nav lb-next" id="lbNext" aria-label="Next">›</button>
+<div class="lb-img-wrap">
+<img id="lbImg" src="" alt="">
+</div>
+<div class="lb-caption">
+<div class="lb-caption-tag" id="lbTag"></div>
+<div class="lb-caption-title" id="lbTitle"></div>
+</div>
+<div class="lb-counter" id="lbCounter"></div>
+</div>
+</div>
+<script>
+/* ── Custom Cursor ── */
+const cursor = document.getElementById('cursor'), ring = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+cursor.style.left = e.clientX+'px'; cursor.style.top = e.clientY+'px';
+ring.style.left = e.clientX+'px'; ring.style.top = e.clientY+'px';
+});
+document.querySelectorAll('a,button,.gi,.ftab,.fs-item').forEach(el => {
+el.addEventListener('mouseenter', () => { ring.style.width='56px'; ring.style.height='56px'; ring.style.opacity='0.8'; });
+el.addEventListener('mouseleave', () => { ring.style.width='38px'; ring.style.height='38px'; ring.style.opacity='0.5'; });
+});
+/* ── Navbar scroll ── */
+window.addEventListener('scroll', () => {
+document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+/* ── Scroll reveal ── */
+const obs = new IntersectionObserver(entries => {
+entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
+/* ── Petals ── */
+const pc = document.getElementById('petals');
+for (let i = 0; i < 18; i++) {
+const p = document.createElement('div'); p.className = 'petal';
+p.style.left = Math.random()*100+'vw';
+p.style.animationDuration = (10+Math.random()*20)+'s';
+p.style.animationDelay = (Math.random()*20)+'s';
+p.style.width = (8+Math.random()*14)+'px';
+p.style.height = (12+Math.random()*18)+'px';
+p.style.transform = `rotate(${Math.random()*360}deg)`;
+pc.appendChild(p);
+}
+/* ── Filter ── */
+const tabs = document.querySelectorAll('.ftab');
+const items = document.querySelectorAll('.gi');
+const counter = document.getElementById('resultsCount');
+function applyFilter(cat) {
+let visible = 0;
+items.forEach(item => {
+const match = cat === 'all' || item.dataset.cat === cat;
+if (match) {
+item.classList.remove('hidden');
+visible++;
+} else {
+item.classList.add('hidden');
+}
+});
+counter.textContent = `Showing ${visible} image${visible !== 1 ? 's' : ''}`;
+updateLbItems();
+}
+tabs.forEach(tab => {
+tab.addEventListener('click', function () {
+tabs.forEach(t => t.classList.remove('active'));
+this.classList.add('active');
+applyFilter(this.dataset.cat);
+});
+});
+/* ── Lightbox ── */
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lbImg');
+const lbTag = document.getElementById('lbTag');
+const lbTitle= document.getElementById('lbTitle');
+const lbCnt = document.getElementById('lbCounter');
+let lbItems = [], lbIndex = 0;
+function updateLbItems() {
+lbItems = Array.from(document.querySelectorAll('.gi:not(.hidden)'));
+}
+updateLbItems();
+function openLb(idx) {
+lbIndex = idx;
+const item = lbItems[idx];
+lbImg.src = item.dataset.src || item.querySelector('img').src;
+lbImg.alt = item.dataset.title;
+lbTag.textContent = item.dataset.tag;
+lbTitle.textContent = item.dataset.title;
+lbCnt.textContent = `${idx+1} / ${lbItems.length}`;
+lb.classList.add('open');
+document.body.style.overflow = 'hidden';
+}
+function closeLb() {
+lb.classList.remove('open');
+document.body.style.overflow = '';
+}
+function moveLb(dir) {
+lbIndex = (lbIndex + dir + lbItems.length) % lbItems.length;
+openLb(lbIndex);
+}
+items.forEach((item, i) => {
+item.addEventListener('click', () => {
+updateLbItems();
+const visibleIdx = lbItems.indexOf(item);
+if (visibleIdx !== -1) openLb(visibleIdx);
+});
+});
+document.getElementById('lbClose').addEventListener('click', closeLb);
+document.getElementById('lbBackdrop').addEventListener('click', closeLb);
+document.getElementById('lbPrev').addEventListener('click', () => moveLb(-1));
+document.getElementById('lbNext').addEventListener('click', () => moveLb(1));
+document.addEventListener('keydown', e => {
+if (!lb.classList.contains('open')) return;
+if (e.key === 'Escape') closeLb();
+if (e.key === 'ArrowLeft') moveLb(-1);
+if (e.key === 'ArrowRight') moveLb(1);
+});
+/* ── Featured strip filter shortcuts ── */
+document.querySelectorAll('.fs-cta').forEach((a, i) => {
+const cats = ['wedding','baby','prewedding'];
+a.addEventListener('click', e => {
+e.preventDefault();
+const tab = document.querySelector(`.ftab[data-cat="${cats[i]}"]`);
+if (tab) {
+tab.click();
+document.querySelector('.gallery-section').scrollIntoView({behavior:'smooth'});
+}
+});
+});
+</script>
+</body>
+</html>
